@@ -31,7 +31,7 @@ function generateConferenceSlots(): string[] {
 
     while (current < end) {
       const startTimeStr = current.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-      const slotEnd = new Date(current.getTime() + 15 * 60000); // 15 min conference slots
+      const slotEnd = new Date(current.getTime() + 15 * 60000);
       const endTimeStr = slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
       slots.push(`${startTimeStr} - ${endTimeStr}`);
       current = new Date(current.getTime() + 20 * 60000);
@@ -53,8 +53,8 @@ export default function ConferenceBookingPage() {
   const [formData, setFormData] = useState<ConferenceBookingFormData>({
     bookingDate: new Date().toISOString().split('T')[0],
     country: 'India',
-    state: 'Haryana',
-    place: 'Gurugram',
+    state: 'Telangana',
+    place: 'Hyderabad',
     location: 'Main Convention Center',
     salutation: 'Dr.',
     delegateName: '',
@@ -62,8 +62,8 @@ export default function ConferenceBookingPage() {
     mobileNo: '',
     email: '',
     hospitalName: '',
-    conferenceName: '',
-    designation: 'Delegate / Researcher',
+    conferenceName: '12th Annual State Chapter Conference of the Telangana Association of Surgeons of India',
+    designation: 'Delegate',
   });
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 'use client';
-import React from 'react';
+import React, { useRef, useState } from 'react';
+import { toPng } from 'html-to-image';
 import { BookingFormData } from '@/app/slots/mantram/page';
 
 interface GreetingTicketProps {
@@ -10,30 +11,44 @@ interface GreetingTicketProps {
 }
 
 export default function GreetingTicket({ bookingNo, formData, selectedSlot, onNewBooking }: GreetingTicketProps) {
+  const ticketRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
   
-  const handleDownloadPDF = () => {
-    const originalTitle = document.title;
-    document.title = `SSI_Booking_Ticket_No_${bookingNo}`;
-    window.print();
-    document.title = originalTitle;
+  const handleDownloadImage = async () => {
+    if (!ticketRef.current) return;
+    
+    try {
+      setIsDownloading(true);
+      
+      // Convert the specific div to a high-res PNG
+      const dataUrl = await toPng(ticketRef.current, {
+        quality: 1.0,
+        pixelRatio: 3, // Multiplies resolution for a super crisp image
+        backgroundColor: '#ffffff'
+      });
+
+      // Create a temporary link to trigger the download
+      const link = document.createElement('a');
+      link.download = `SSI_Booking_Ticket_No_${bookingNo}.png`;
+      link.href = dataUrl;
+      link.click();
+      
+    } catch (err) {
+      console.error('Error generating ticket image:', err);
+      alert('Failed to download the ticket. Please try again.');
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
     <div className="w-full flex-1 flex items-center justify-center animate-in zoom-in-95 duration-500 py-6">
       
-      <style>{`
-        @media print {
-          body * { visibility: hidden; }
-          #pdf-ticket, #pdf-ticket * { visibility: visible; }
-          #pdf-ticket { position: absolute; left: 0; top: 0; width: 100%; border: none; box-shadow: none; }
-          .no-print { display: none !important; }
-        }
-      `}</style>
-
       {/* Cute, High-Density Compact Ticket Card */}
       <div className="w-full max-w-[420px] bg-white rounded-[28px] shadow-[0_12px_40px_rgb(0,0,0,0.08)] border-2 border-emerald-100 overflow-hidden flex flex-col">
         
-        <div id="pdf-ticket" className="bg-white relative">
+        {/* We attach the React Ref here. Everything inside this div becomes the image */}
+        <div ref={ticketRef} className="bg-white relative">
           {/* Top Banner */}
           <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-5 text-center text-white relative overflow-hidden">
              <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 -mr-10 -mt-10 rounded-full blur-sm"></div>
@@ -79,14 +94,24 @@ export default function GreetingTicket({ bookingNo, formData, selectedSlot, onNe
           </div>
         </div>
 
-        {/* Action Controls */}
-        <div className="p-4 bg-slate-50 border-t border-slate-100 flex gap-3 no-print">
+        {/* Action Controls (These are outside the ref, so they won't be in the downloaded image) */}
+        <div className="p-4 bg-slate-50 border-t border-slate-100 flex gap-3">
           <button 
-            onClick={handleDownloadPDF}
-            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-3.5 rounded-xl transition-all cursor-pointer shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2"
+            onClick={handleDownloadImage}
+            disabled={isDownloading}
+            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-3.5 rounded-xl transition-all cursor-pointer shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-            Download PDF
+            {isDownloading ? (
+              <>
+                <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                Saving...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                Download Ticket
+              </>
+            )}
           </button>
           <button 
             onClick={onNewBooking}

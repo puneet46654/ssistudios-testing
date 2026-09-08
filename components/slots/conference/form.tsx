@@ -36,11 +36,23 @@ export default function BookingForm({ formData, selectedSlot, isSubmitting, onCh
       {/* Main Details Box */}
       <div className="bg-white p-5 sm:p-8 rounded-3xl border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] space-y-6">
         <div className="border-b border-slate-100 pb-4">
-          <h3 className="text-base sm:text-lg font-black text-slate-900">Delegate & Institutional Details</h3>
+          <h3 className="text-base sm:text-lg font-black text-slate-900">Registration Details</h3>
           <p className="text-xs text-slate-500 mt-0.5 font-medium">Please provide accurate verification information for your symposium registration record.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+
+          {/* Locked Conference Name */}
+          <div className="space-y-1.5 md:col-span-2">
+            <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-1">Conference Name</label>
+            <input 
+              type="text" 
+              name="conferenceName" 
+              readOnly 
+              value={formData.conferenceName} 
+              className="w-full bg-slate-100 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-semibold text-slate-600 outline-none shadow-sm cursor-not-allowed select-none" 
+            />
+          </div>
           
           {/* Delegate Name with Prefix */}
           <div className="space-y-1.5">
@@ -70,18 +82,19 @@ export default function BookingForm({ formData, selectedSlot, isSubmitting, onCh
             </div>
           </div>
 
-          {/* Designation */}
+          {/* Designation Selection */}
           <div className="space-y-1.5">
-            <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-1">Designation / Role <span className="text-rose-500">*</span></label>
-            <input 
-              type="text" 
+            <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-1">Designation <span className="text-rose-500">*</span></label>
+            <select 
               name="designation" 
               required 
-              placeholder="e.g. Senior Researcher / Delegate"
               value={formData.designation} 
               onChange={onChange} 
-              className="w-full bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-medium text-slate-800 outline-none focus:border-purple-500 focus:bg-white shadow-sm" 
-            />
+              className="w-full bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-bold text-slate-800 outline-none focus:border-purple-500 focus:bg-white cursor-pointer shadow-sm"
+            >
+              <option value="Delegate">Delegate</option>
+              <option value="Faculty">Faculty</option>
+            </select>
           </div>
 
           {/* Mobile Number with Country Code */}
@@ -125,29 +138,15 @@ export default function BookingForm({ formData, selectedSlot, isSubmitting, onCh
             />
           </div>
 
-          {/* Hospital Name */}
+          {/* Hospital / Institution Name */}
           <div className="space-y-1.5 md:col-span-2">
-            <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-1">Hospital Name <span className="text-rose-500">*</span></label>
+            <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-1">Hospital / Institution Name <span className="text-rose-500">*</span></label>
             <input 
               type="text" 
               name="hospitalName" 
               required 
-              placeholder="e.g. SMRSC Research Hospital"
+              placeholder="e.g. City General Hospital"
               value={formData.hospitalName} 
-              onChange={onChange} 
-              className="w-full bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-medium text-slate-800 outline-none focus:border-purple-500 focus:bg-white shadow-sm" 
-            />
-          </div>
-
-          {/* Conference Name */}
-          <div className="space-y-1.5 md:col-span-2">
-            <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-1">Conference Name <span className="text-rose-500">*</span></label>
-            <input 
-              type="text" 
-              name="conferenceName" 
-              required 
-              placeholder="e.g. Global Medical Innovation Conference"
-              value={formData.conferenceName} 
               onChange={onChange} 
               className="w-full bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-medium text-slate-800 outline-none focus:border-purple-500 focus:bg-white shadow-sm" 
             />
@@ -172,12 +171,12 @@ export default function BookingForm({ formData, selectedSlot, isSubmitting, onCh
 
           {/* State */}
           <div className="space-y-1.5">
-            <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-1">State / Province <span className="text-rose-500">*</span></label>
+            <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-1">State <span className="text-rose-500">*</span></label>
             <input 
               type="text" 
               name="state" 
               required 
-              placeholder="e.g. Haryana"
+              placeholder="e.g. Telangana"
               value={formData.state} 
               onChange={onChange} 
               className="w-full bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-medium text-slate-800 outline-none focus:border-purple-500 focus:bg-white shadow-sm" 
@@ -191,7 +190,7 @@ export default function BookingForm({ formData, selectedSlot, isSubmitting, onCh
               type="text" 
               name="place" 
               required 
-              placeholder="e.g. Gurugram"
+              placeholder="e.g. Hyderabad"
               value={formData.place} 
               onChange={onChange} 
               className="w-full bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-medium text-slate-800 outline-none focus:border-purple-500 focus:bg-white shadow-sm" 
