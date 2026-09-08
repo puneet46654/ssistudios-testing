@@ -230,7 +230,7 @@ export default function BookingForm({ formData, selectedSlot, isSubmitting, onCh
           </div>
 
           {/* Place / City */}
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 md:col-span-2">
             <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-1">City / Town <span className="text-rose-500">*</span></label>
             <input 
               type="text" 
@@ -238,20 +238,6 @@ export default function BookingForm({ formData, selectedSlot, isSubmitting, onCh
               required 
               placeholder="e.g. Gurugram"
               value={formData.place} 
-              onChange={onChange} 
-              className="w-full bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-medium text-slate-800 outline-none focus:border-indigo-500 focus:bg-white shadow-sm" 
-            />
-          </div>
-
-          {/* Location / Landmark */}
-          <div className="space-y-1.5">
-            <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-1">Specific Venue / Location <span className="text-rose-500">*</span></label>
-            <input 
-              type="text" 
-              name="location" 
-              required 
-              placeholder="e.g. Main Auditorium Block B"
-              value={formData.location} 
               onChange={onChange} 
               className="w-full bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-medium text-slate-800 outline-none focus:border-indigo-500 focus:bg-white shadow-sm" 
             />
