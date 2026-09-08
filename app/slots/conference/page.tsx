@@ -62,7 +62,7 @@ export default function ConferenceBookingPage() {
     mobileNo: '',
     email: '',
     hospitalName: '',
-    conferenceName: '12th Annual State Chapter Conference of the Telangana Association of Surgeons of India',
+    conferenceName: 'Oncology For Post Graduates',
     designation: 'Delegate',
   });
 

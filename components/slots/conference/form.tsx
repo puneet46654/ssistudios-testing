@@ -42,16 +42,19 @@ export default function BookingForm({ formData, selectedSlot, isSubmitting, onCh
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
 
-          {/* Locked Conference Name */}
+          {/* Conference Name */}
           <div className="space-y-1.5 md:col-span-2">
             <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider px-1">Conference Name</label>
-            <input 
-              type="text" 
-              name="conferenceName" 
-              readOnly 
-              value="Oncology For Post Graduates" 
-              className="w-full bg-slate-100 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-semibold text-slate-600 outline-none shadow-sm cursor-not-allowed select-none" 
-            />
+            <select
+              name="conferenceName"
+              required
+              value={formData.conferenceName}
+              onChange={onChange}
+              className="w-full bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-bold text-slate-800 outline-none focus:border-purple-500 focus:bg-white cursor-pointer shadow-sm"
+            >
+              <option value="Oncology For Post Graduates">Oncology For Post Graduates</option>
+              <option value="Minister for Health, Medical & Family Welfare Government of Telangana Hyderabad">Minister for Health, Medical & Family Welfare Government of Telangana Hyderabad</option>
+            </select>
           </div>
           
           {/* Delegate Name with Prefix */}
