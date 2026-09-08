@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 interface TimeSelectionProps {
   availableSlots: string[];
@@ -10,6 +10,27 @@ interface TimeSelectionProps {
 }
 
 export default function TimeSelection({ availableSlots, bookedSlots, onSelectSlot, bookingDate, onDateChange }: TimeSelectionProps) {
+  
+  // Auto-fetch today's date in YYYY-MM-DD format (timezone safe)
+  const todayFormatted = useMemo(() => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }, []);
+
+  // Ensure the parent component's state is strictly synced to today's date
+  useEffect(() => {
+    if (bookingDate !== todayFormatted) {
+      const syntheticEvent = {
+        target: { name: 'bookingDate', value: todayFormatted }
+      } as React.ChangeEvent<HTMLInputElement>;
+      
+      onDateChange(syntheticEvent);
+    }
+  }, [bookingDate, todayFormatted, onDateChange]);
+
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full flex-1 flex flex-col font-sans">
       
@@ -42,15 +63,16 @@ export default function TimeSelection({ availableSlots, bookedSlots, onSelectSlo
             </div>
           </div>
 
-          {/* Date Selector */}
+          {/* Date Selector (Fixed & Read-Only) */}
           <div className="flex flex-col">
             <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1.5 px-1">Session Date</label>
             <input
               type="date"
               name="bookingDate"
-              value={bookingDate}
-              onChange={onDateChange}
-              className="bg-slate-50/80 border border-slate-200 hover:border-indigo-500 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 rounded-2xl px-4 py-2.5 text-sm font-bold text-slate-800 outline-none transition-all cursor-pointer shadow-sm"
+              value={todayFormatted}
+              readOnly
+              className="bg-slate-100 border border-slate-200 rounded-2xl px-4 py-2.5 text-sm font-bold text-slate-500 outline-none cursor-not-allowed shadow-sm select-none opacity-80"
+              title="Date is fixed to today"
             />
           </div>
         </div>
