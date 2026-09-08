@@ -49,7 +49,7 @@ export default function BookingForm({ formData, selectedSlot, isSubmitting, onCh
               type="text" 
               name="conferenceName" 
               readOnly 
-              value={formData.conferenceName} 
+              value="TGASICON" 
               className="w-full bg-slate-100 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-semibold text-slate-600 outline-none shadow-sm cursor-not-allowed select-none" 
             />
           </div>
