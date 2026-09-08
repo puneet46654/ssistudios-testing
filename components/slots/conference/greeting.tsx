@@ -26,12 +26,39 @@ export default function GreetingTicket({ bookingNo, formData, selectedSlot, onNe
         pixelRatio: 3, // Multiplies resolution for a super crisp image
         backgroundColor: '#ffffff'
       });
+      // Detect iOS devices (iPhone / iPad / iPod and iPadOS)
+      const isIOS = typeof navigator !== 'undefined' && (
+        /iP(hone|od|ad)/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && (navigator as any).maxTouchPoints > 1)
+      );
 
-      // Create a temporary link to trigger the download
-      const link = document.createElement('a');
-      link.download = `Conference_Ticket_No_${bookingNo}.png`;
-      link.href = dataUrl;
-      link.click();
+      // On iOS Safari the `download` attribute is ignored — open the image in a new tab so
+      // users can long-press to save. For other browsers create a blob and trigger download.
+      if (isIOS) {
+        const newWindow = window.open();
+        if (newWindow) {
+          // Use the data URL for reliable display in the new tab
+          newWindow.document.write(`<!doctype html><title>Ticket</title><style>html,body{margin:0;height:100%;display:flex;align-items:center;justify-content:center;background:#fff}</style><img src="${dataUrl}" style="max-width:100%;height:auto;"/>`);
+          newWindow.document.close();
+        } else {
+          // Fallback: try opening the data URL directly
+          window.location.href = dataUrl;
+        }
+      } else {
+        // Convert dataURL to blob and use object URL for download to avoid issues with very large data URLs
+        const res = await fetch(dataUrl);
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.download = `Conference_Ticket_No_${bookingNo}.png`;
+        link.href = blobUrl;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        // Release object URL after a short delay to ensure the download started
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+      }
       
     } catch (err) {
       console.error('Error generating ticket image:', err);
