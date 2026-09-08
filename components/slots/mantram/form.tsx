@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { BookingFormData } from '@/app/slots/mantram/page';
 
 interface BookingFormProps {
@@ -12,8 +12,60 @@ interface BookingFormProps {
 }
 
 export default function BookingForm({ formData, selectedSlot, isSubmitting, onChange, onSubmit, onBack }: BookingFormProps) {
+  const [mobileError, setMobileError] = useState('');
+  const [emailError, setEmailError] = useState('');
+
+  // Strict inline validation handler before submission
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    let isValid = true;
+
+    // Validate 10-digit mobile number requirement
+    const mobileRegex = /^[0-9]{10}$/;
+    if (!mobileRegex.test(formData.mobileNo)) {
+      setMobileError('Please enter a valid 10-digit mobile number.');
+      isValid = false;
+    } else {
+      setMobileError('');
+    }
+
+    // Validate strict email format requirement
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setEmailError('Please enter a valid email address.');
+      isValid = false;
+    } else {
+      setEmailError('');
+    }
+
+    if (isValid) {
+      onSubmit(e);
+    }
+  };
+
+  // Helper to filter numeric-only input for phone number (max 10 digits)
+  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+    const updatedEvent = {
+      ...e,
+      target: {
+        ...e.target,
+        name: 'mobileNo',
+        value,
+      },
+    };
+    onChange(updatedEvent);
+    if (value.length === 10) setMobileError('');
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e);
+    if (e.target.value.includes('@')) setEmailError('');
+  };
+
   return (
-    <form onSubmit={onSubmit} className="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full max-w-4xl mx-auto space-y-5 px-3 sm:px-6 font-sans">
+    <form onSubmit={handleFormSubmit} className="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full max-w-4xl mx-auto space-y-5 px-3 sm:px-6 font-sans" noValidate>
       
       {/* Active Selection Indicator */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white border border-slate-100 p-5 rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] gap-4">
@@ -103,12 +155,16 @@ export default function BookingForm({ formData, selectedSlot, isSubmitting, onCh
                 type="tel" 
                 name="mobileNo" 
                 required 
+                maxLength={10}
                 placeholder="9876543210"
                 value={formData.mobileNo} 
-                onChange={onChange} 
-                className="flex-1 bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-medium text-slate-800 outline-none focus:border-indigo-500 focus:bg-white shadow-sm" 
+                onChange={handleMobileChange} 
+                className={`flex-1 bg-slate-50/80 border rounded-2xl px-4 py-3 text-xs sm:text-sm font-medium text-slate-800 outline-none focus:bg-white shadow-sm ${
+                  mobileError ? 'border-rose-500 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
+                }`} 
               />
             </div>
+            {mobileError && <span className="text-[11px] font-bold text-rose-500 px-1 block">{mobileError}</span>}
           </div>
 
           {/* Email Address */}
@@ -120,9 +176,12 @@ export default function BookingForm({ formData, selectedSlot, isSubmitting, onCh
               required 
               placeholder="doctor@hospital.com"
               value={formData.email} 
-              onChange={onChange} 
-              className="w-full bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3 text-xs sm:text-sm font-medium text-slate-800 outline-none focus:border-indigo-500 focus:bg-white shadow-sm" 
+              onChange={handleEmailChange} 
+              className={`w-full bg-slate-50/80 border rounded-2xl px-4 py-3 text-xs sm:text-sm font-medium text-slate-800 outline-none focus:bg-white shadow-sm ${
+                emailError ? 'border-rose-500 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'
+              }`} 
             />
+            {emailError && <span className="text-[11px] font-bold text-rose-500 px-1 block">{emailError}</span>}
           </div>
 
           {/* Hospital Name */}
