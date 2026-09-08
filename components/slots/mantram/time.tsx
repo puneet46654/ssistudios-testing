@@ -42,7 +42,7 @@ export default function TimeSelection({ availableSlots, bookedSlots, onSelectSlo
               Phase 1 of 3
             </span>
             <span className="text-slate-300">•</span>
-            <span className="text-xs font-semibold text-slate-400">Live Scheduling</span>
+            <span className="text-xs font-semibold text-slate-400">7-Min Sessions (3-Min Gap)</span>
           </div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight font-sans">Select Session Slot</h2>
           <p className="text-sm text-slate-500 mt-1 font-medium">Choose an available slot below to proceed with your clinical registration.</p>
