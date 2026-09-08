@@ -79,6 +79,14 @@ const menu: MenuItem[] = [
 
     ],
   },
+  {
+    name: 'Bookings',
+    icon: LuFiles,
+    requiredAccess: 'dashboard',
+    children: [
+      { name: 'Bookings Admin', path: '/bookings' }
+    ],
+  },
   
   //{ name: 'Visiting Cards', icon: LuContact, path: "/visitingcards", requiredAccess: 'visitingCard' },
  // { name: 'Image Enhancer', icon: LuWand, path: '/imageenhancer', requiredAccess: 'imageEnhancer', isUnderDevelopment: true },
