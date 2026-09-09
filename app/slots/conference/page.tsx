@@ -9,7 +9,7 @@ export const CONFERENCE_BOOKING_DATES = ['2026-09-12', '2026-09-13'];
 
 function isPersistedConferenceSlot(slot: string, slots: string[]) {
   const index = slots.indexOf(slot);
-  return index >= 0 && (index < 3 || index >= slots.length - 3);
+  return index >= 0 && index >= 4;
 }
 
 export interface ConferenceBookingFormData {

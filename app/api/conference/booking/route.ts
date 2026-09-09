@@ -27,7 +27,7 @@ function generateConferenceSlotTemplates(): string[] {
 function shouldPersistConferenceSlot(slotTime: string) {
   const slots = generateConferenceSlotTemplates();
   const index = slots.indexOf(slotTime);
-  return index >= 0 && (index < 3 || index >= slots.length - 3);
+  return index >= 0 && index >= 4;
 }
 
 export async function GET(request: Request) {

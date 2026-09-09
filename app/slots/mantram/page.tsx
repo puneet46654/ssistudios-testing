@@ -23,7 +23,7 @@ export interface BookingFormData {
 
 function isPersistedMantramSlot(slot: string, slots: string[]) {
   const index = slots.indexOf(slot);
-  return index >= 0 && (index < 3 || index >= slots.length - 3);
+  return index >= 0 && index >= 4;
 }
 
 function generateMantramSlots(): string[] {
