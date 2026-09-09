@@ -43,7 +43,7 @@ export default function TimeSelection({ availableDates, availableSlots, bookedSl
               Phase 1 of 3
             </span>
             <span className="text-slate-300">•</span>
-            <span className="text-xs font-semibold text-slate-400">7-Min Sessions (3-Min Gap)</span>
+            <span className="text-xs font-semibold text-slate-400">5-Min Sessions (2-Min Gap)</span>
           </div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight font-sans">Select Conference Session Slot</h2>
           <p className="text-sm text-slate-500 mt-1 font-medium">Choose an available slot below to proceed with your delegate registration.</p>

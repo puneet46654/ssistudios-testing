@@ -33,10 +33,10 @@ function generateConferenceSlots(): string[] {
 
     while (current < end) {
       const startTimeStr = current.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-      const slotEnd = new Date(current.getTime() + 15 * 60000);
+      const slotEnd = new Date(current.getTime() + 5 * 60000);
       const endTimeStr = slotEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
       slots.push(`${startTimeStr} - ${endTimeStr}`);
-      current = new Date(current.getTime() + 20 * 60000);
+      current = new Date(current.getTime() + 7 * 60000);
     }
   };
   addTimeRangeSlots(9, 17);
