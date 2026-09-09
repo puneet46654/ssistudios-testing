@@ -1020,7 +1020,7 @@ export default function AdminBookingsClient({
       {/* Page title */}
       <header className="px-0.5 sm:px-1">
         <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-          Bookings Admin
+          Under Testing
         </h1>
       </header>
 
