@@ -77,7 +77,7 @@ export default function GreetingTicket({ bookingNo, formData, selectedSlot, onNe
              <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 -mr-10 -mt-10 rounded-full blur-sm"></div>
              <div className="w-10 h-10 mx-auto mb-2 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center font-black text-lg">✓</div>
              <h2 className="text-xl font-black tracking-tight font-sans">Booking Confirmed</h2>
-             <p className="text-emerald-100 text-xs font-medium mt-0.5">SSI Official Session Pass</p>
+             <p className="text-emerald-100 text-xs font-medium mt-0.5">Please Download The Ticket For Entry</p>
           </div>
 
           {/* Ticket Information Body */}
