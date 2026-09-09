@@ -2,35 +2,35 @@
 import React, { useEffect, useMemo } from 'react';
 
 interface TimeSelectionProps {
+  availableDates?: string[];
   availableSlots: string[];
   bookedSlots: string[];
   onSelectSlot: (slot: string) => void;
   bookingDate: string;
-  onDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onDateChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
-export default function TimeSelection({ availableSlots, bookedSlots, onSelectSlot, bookingDate, onDateChange }: TimeSelectionProps) {
-  
-  // Auto-fetch today's date in YYYY-MM-DD format (timezone safe)
-  const todayFormatted = useMemo(() => {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-  }, []);
+const DEFAULT_CONFERENCE_DATES = ['2026-09-11', '2026-09-12'];
 
-  // Ensure the parent component's state is strictly synced to today's date
+function formatConferenceDate(dateString: string) {
+  const [year, month, day] = dateString.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+}
+
+export default function TimeSelection({ availableDates, availableSlots, bookedSlots, onSelectSlot, bookingDate, onDateChange }: TimeSelectionProps) {
+  const allowedDates = useMemo(() => availableDates && availableDates.length ? availableDates : DEFAULT_CONFERENCE_DATES, [availableDates]);
+  const selectedDate = allowedDates.includes(bookingDate) ? bookingDate : allowedDates[0];
+
   useEffect(() => {
-    if (bookingDate !== todayFormatted) {
-      // Create a synthetic event to satisfy the onDateChange signature
+    if (bookingDate !== selectedDate) {
       const syntheticEvent = {
-        target: { name: 'bookingDate', value: todayFormatted }
-      } as React.ChangeEvent<HTMLInputElement>;
-      
+        target: { name: 'bookingDate', value: selectedDate }
+      } as React.ChangeEvent<HTMLSelectElement>;
+
       onDateChange(syntheticEvent);
     }
-  }, [bookingDate, todayFormatted, onDateChange]);
+  }, [bookingDate, selectedDate, onDateChange]);
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full flex-1 flex flex-col font-sans">
@@ -64,17 +64,22 @@ export default function TimeSelection({ availableSlots, bookedSlots, onSelectSlo
             </div>
           </div>
 
-          {/* Date Selector (Fixed & Read-Only) */}
+          {/* Date Selector */}
           <div className="flex flex-col">
             <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1.5 px-1">Session Date</label>
-            <input
-              type="date"
+            <select
               name="bookingDate"
-              value={todayFormatted}
-              readOnly
-              className="bg-slate-100 border border-slate-200 rounded-2xl px-4 py-2.5 text-sm font-bold text-slate-500 outline-none cursor-not-allowed shadow-sm select-none opacity-80"
-              title="Date is fixed to today"
-            />
+              value={selectedDate}
+              onChange={onDateChange}
+              className="bg-slate-100 border border-slate-200 rounded-2xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none shadow-sm cursor-pointer focus:border-purple-500 focus:bg-white"
+              title="Choose the session date"
+            >
+              {allowedDates.map((date) => (
+                <option key={date} value={date}>
+                  {formatConferenceDate(date)}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>

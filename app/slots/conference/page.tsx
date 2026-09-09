@@ -5,6 +5,8 @@ import TimeSelection from '@/components/slots/conference/time';
 import BookingForm from '@/components/slots/conference/form';
 import GreetingTicket from '@/components/slots/conference/greeting';
 
+export const CONFERENCE_BOOKING_DATES = ['2026-09-11', '2026-09-12'];
+
 export interface ConferenceBookingFormData {
   bookingDate: string;
   country: string;
@@ -51,7 +53,7 @@ export default function ConferenceBookingPage() {
   const [bookingNo, setBookingNo] = useState<number | null>(null);
 
   const [formData, setFormData] = useState<ConferenceBookingFormData>({
-    bookingDate: new Date().toISOString().split('T')[0],
+    bookingDate: CONFERENCE_BOOKING_DATES[0],
     country: 'India',
     state: 'Telangana',
     place: 'Hyderabad',
@@ -81,10 +83,17 @@ export default function ConferenceBookingPage() {
       }
     };
     if (formData.bookingDate) fetchBookedSlots();
-  }, [formData.bookingDate, step]);
+  }, [formData.bookingDate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === 'bookingDate') {
+      setSelectedSlot('');
+      setStep(1);
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSlotChoice = (slot: string) => {
@@ -140,6 +149,7 @@ export default function ConferenceBookingPage() {
       <main className="flex-1 w-full px-4 sm:px-8 max-w-7xl mx-auto py-8 flex flex-col justify-center">
         {step === 1 && (
           <TimeSelection 
+            availableDates={CONFERENCE_BOOKING_DATES}
             availableSlots={availableSlots} 
             bookedSlots={bookedSlots}
             onSelectSlot={handleSlotChoice} 

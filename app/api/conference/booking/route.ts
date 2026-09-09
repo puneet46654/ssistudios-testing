@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbconnect';
 import ConferenceBooking from '@/models/ConferenceBooking';
 
+const ALLOWED_CONFERENCE_BOOKING_DATES = ['2026-09-11', '2026-09-12'];
+
 export async function GET(request: Request) {
   try {
     await dbConnect();
@@ -10,6 +12,10 @@ export async function GET(request: Request) {
 
     if (!date) {
       return NextResponse.json({ success: false, error: 'Date query parameter is required' }, { status: 400 });
+    }
+
+    if (!ALLOWED_CONFERENCE_BOOKING_DATES.includes(date)) {
+      return NextResponse.json({ success: false, error: 'Invalid session date selected.' }, { status: 400 });
     }
 
     const bookings = await ConferenceBooking.find({ bookingDate: date });
@@ -30,6 +36,10 @@ export async function POST(request: Request) {
 
     if (!bookingDate || !slotTime) {
       return NextResponse.json({ success: false, error: 'Booking date and slot time are required' }, { status: 400 });
+    }
+
+    if (!ALLOWED_CONFERENCE_BOOKING_DATES.includes(bookingDate)) {
+      return NextResponse.json({ success: false, error: 'Invalid session date selected.' }, { status: 400 });
     }
 
     const existingBooking = await ConferenceBooking.findOne({ bookingDate, slotTime });
