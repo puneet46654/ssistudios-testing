@@ -74,7 +74,7 @@ export default function ConferenceBookingPage() {
   useEffect(() => {
     const fetchBookedSlots = async () => {
       try {
-        const res = await fetch(`/api/conference/booking?date=${formData.bookingDate}`);
+        const res = await fetch(`/api/conferences/booking?date=${formData.bookingDate}`);
         const data = await res.json();
         if (data.success) setBookedSlots(data.bookedSlots);
       } catch (err) {

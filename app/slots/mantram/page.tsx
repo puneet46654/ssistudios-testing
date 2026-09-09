@@ -72,7 +72,7 @@ export default function MantramBookingPage() {
   useEffect(() => {
     const fetchBookedSlots = async () => {
       try {
-        const res = await fetch(`/api/mantram/booking?date=${formData.bookingDate}`);
+        const res = await fetch(`/api/mantrams/booking?date=${formData.bookingDate}`);
         const data = await res.json();
         if (data.success) setBookedSlots(data.bookedSlots);
       } catch (err) {
