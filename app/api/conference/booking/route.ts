@@ -42,25 +42,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Invalid session date selected.' }, { status: 400 });
     }
 
-    const existingBooking = await ConferenceBooking.findOne({ bookingDate, slotTime });
-    if (existingBooking) {
-      return NextResponse.json({ success: false, error: 'Selected slot is already reserved.' }, { status: 400 });
-    }
-
-    const duplicateUser = await ConferenceBooking.findOne({ bookingDate, $or: [{ email }, { mobileNo }] });
-    if (duplicateUser) {
-      return NextResponse.json({ success: false, error: 'A registration with this email or mobile number already exists for this date.' }, { status: 400 });
-    }
-
-    const lastBooking = await ConferenceBooking.findOne().sort({ bookingNo: -1 });
-    const nextBookingNo = lastBooking ? lastBooking.bookingNo + 1 : 2001;
-
-    const newBooking = await ConferenceBooking.create({
-      ...body,
-      bookingNo: nextBookingNo,
-    });
-
-    return NextResponse.json({ success: true, bookingNo: newBooking.bookingNo }, { status: 201 });
+    // Temporary stop: MongoDB writes are disabled for now.
+    // This keeps form submission working without saving the booking record.
+    const demoBookingNo = Date.now() % 1000000;
+    return NextResponse.json({ success: true, bookingNo: demoBookingNo }, { status: 201 });
   } catch (error) {
     console.error('Error creating conference booking:', error);
     return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });

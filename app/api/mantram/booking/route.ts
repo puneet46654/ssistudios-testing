@@ -32,25 +32,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Booking date and slot time are required' }, { status: 400 });
     }
 
-    const existingBooking = await MantramBooking.findOne({ bookingDate, slotTime });
-    if (existingBooking) {
-      return NextResponse.json({ success: false, error: 'Selected slot is already reserved.' }, { status: 400 });
-    }
-
-    const duplicateUser = await MantramBooking.findOne({ bookingDate, $or: [{ email }, { mobileNo }] });
-    if (duplicateUser) {
-      return NextResponse.json({ success: false, error: 'A booking with this email or mobile number already exists for this date.' }, { status: 400 });
-    }
-
-    const lastBooking = await MantramBooking.findOne().sort({ bookingNo: -1 });
-    const nextBookingNo = lastBooking ? lastBooking.bookingNo + 1 : 1001;
-
-    const newBooking = await MantramBooking.create({
-      ...body,
-      bookingNo: nextBookingNo,
-    });
-
-    return NextResponse.json({ success: true, bookingNo: newBooking.bookingNo }, { status: 201 });
+    // Temporary stop: MongoDB writes are disabled for now.
+    // This keeps form submission working without saving the booking record.
+    const demoBookingNo = Date.now() % 1000000;
+    return NextResponse.json({ success: true, bookingNo: demoBookingNo }, { status: 201 });
   } catch (error) {
     console.error('Error creating mantram booking:', error);
     return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
