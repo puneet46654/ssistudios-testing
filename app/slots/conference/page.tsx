@@ -177,8 +177,8 @@ export default function ConferenceBookingPage() {
           />
         )}
         {isTransitioning && (
-          <div className="w-full max-w-2xl mx-auto mt-6 rounded-2xl border border-purple-200 bg-purple-50 px-4 py-3 text-center text-sm font-bold text-purple-700 shadow-sm">
-            Preparing your conference booking... Please wait 7 seconds.
+          <div className="sr-only" aria-live="polite">
+            Preparing your conference booking.
           </div>
         )}
         {step === 2 && (

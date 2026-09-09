@@ -167,8 +167,8 @@ export default function MantramBookingPage() {
           />
         )}
         {isTransitioning && (
-          <div className="w-full max-w-2xl mx-auto mt-6 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-center text-sm font-bold text-indigo-700 shadow-sm">
-            Preparing your mantram booking... Please wait 7 seconds.
+          <div className="sr-only" aria-live="polite">
+            Preparing your mantram booking.
           </div>
         )}
         {step === 2 && (
