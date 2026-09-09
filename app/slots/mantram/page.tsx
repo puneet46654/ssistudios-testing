@@ -21,6 +21,11 @@ export interface BookingFormData {
   specialty: string;
 }
 
+function isPersistedMantramSlot(slot: string, slots: string[]) {
+  const index = slots.indexOf(slot);
+  return index >= 0 && (index < 3 || index >= slots.length - 3);
+}
+
 function generateMantramSlots(): string[] {
   const slots: string[] = [];
   const addTimeRangeSlots = (startHour: number, endHour: number) => {
@@ -48,6 +53,7 @@ export default function MantramBookingPage() {
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
   const [bookingNo, setBookingNo] = useState<number | null>(null);
 
   const [formData, setFormData] = useState<BookingFormData>({
@@ -72,7 +78,7 @@ export default function MantramBookingPage() {
   useEffect(() => {
     const fetchBookedSlots = async () => {
       try {
-        const res = await fetch(`/api/mantrams/booking?date=${formData.bookingDate}`);
+        const res = await fetch(`/api/mantram/booking?date=${formData.bookingDate}`);
         const data = await res.json();
         if (data.success) setBookedSlots(data.bookedSlots);
       } catch (err) {
@@ -88,22 +94,34 @@ export default function MantramBookingPage() {
 
   const handleSlotChoice = (slot: string) => {
     setSelectedSlot(slot);
-    setStep(2);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setStep(2);
+      setIsTransitioning(false);
+    }, 7000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      const shouldPersist = isPersistedMantramSlot(selectedSlot, availableSlots);
       const response = await fetch('/api/mantram/booking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, slotTime: selectedSlot }),
+        body: JSON.stringify({ ...formData, slotTime: selectedSlot, persistToMongo: shouldPersist }),
       });
       const result = await response.json();
       if (result.success) {
+        if (!result.persisted) {
+          setBookedSlots((prev) => (prev.includes(selectedSlot) ? prev : [...prev, selectedSlot]));
+        }
         setBookingNo(result.bookingNo);
-        setStep(3); // Explicitly triggers step 3 and passes bookingNo
+        setTimeout(() => {
+          setStep(3);
+          setIsSubmitting(false);
+        }, 7000);
+        return;
       } else {
         alert(result.error);
         setStep(1);
@@ -111,7 +129,9 @@ export default function MantramBookingPage() {
     } catch {
       alert('Error connecting to server. Please try again.');
     } finally {
-      setIsSubmitting(false);
+      if (step !== 3) {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -145,6 +165,11 @@ export default function MantramBookingPage() {
             bookingDate={formData.bookingDate}
             onDateChange={handleChange}
           />
+        )}
+        {isTransitioning && (
+          <div className="w-full max-w-2xl mx-auto mt-6 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-center text-sm font-bold text-indigo-700 shadow-sm">
+            Preparing your mantram booking... Please wait 7 seconds.
+          </div>
         )}
         {step === 2 && (
           <BookingForm 
