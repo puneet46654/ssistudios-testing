@@ -107,7 +107,7 @@ export default function ConferenceBookingPage() {
     setTimeout(() => {
       setStep(2);
       setIsTransitioning(false);
-    }, 7000);
+    }, 4000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -129,7 +129,7 @@ export default function ConferenceBookingPage() {
         setTimeout(() => {
           setStep(3);
           setIsSubmitting(false);
-        }, 7000);
+        }, 4000);
         return;
       } else {
         alert(result.error);
