@@ -5,7 +5,7 @@ import TimeSelection from '@/components/slots/conference/time';
 import BookingForm from '@/components/slots/conference/form';
 import GreetingTicket from '@/components/slots/conference/greeting';
 
-export const CONFERENCE_BOOKING_DATES = ['2026-09-11', '2026-09-12'];
+export const CONFERENCE_BOOKING_DATES = ['2026-09-12', '2026-09-13'];
 
 export interface ConferenceBookingFormData {
   bookingDate: string;
@@ -39,8 +39,7 @@ function generateConferenceSlots(): string[] {
       current = new Date(current.getTime() + 20 * 60000);
     }
   };
-  addTimeRangeSlots(10, 13);
-  addTimeRangeSlots(14, 18);
+  addTimeRangeSlots(9, 17);
   return slots;
 }
 

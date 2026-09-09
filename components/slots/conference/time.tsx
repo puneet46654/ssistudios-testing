@@ -10,7 +10,7 @@ interface TimeSelectionProps {
   onDateChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
-const DEFAULT_CONFERENCE_DATES = ['2026-09-11', '2026-09-12'];
+const DEFAULT_CONFERENCE_DATES = ['2026-09-12', '2026-09-13'];
 
 function formatConferenceDate(dateString: string) {
   const [year, month, day] = dateString.split('-').map(Number);

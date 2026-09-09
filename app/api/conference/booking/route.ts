@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbconnect';
 import ConferenceBooking from '@/models/ConferenceBooking';
 
-const ALLOWED_CONFERENCE_BOOKING_DATES = ['2026-09-11', '2026-09-12'];
+const ALLOWED_CONFERENCE_BOOKING_DATES = ['2026-09-12', '2026-09-13'];
 
 export async function GET(request: Request) {
   try {

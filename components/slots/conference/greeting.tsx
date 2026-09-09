@@ -21,44 +21,50 @@ export default function GreetingTicket({ bookingNo, formData, selectedSlot, onNe
       setIsDownloading(true);
       
       // Convert the specific div to a high-res PNG
+      // Added cacheBust: true which is crucial for Safari to render properly
       const dataUrl = await toPng(ticketRef.current, {
         quality: 1.0,
-        pixelRatio: 3, // Multiplies resolution for a super crisp image
-        backgroundColor: '#ffffff'
+        pixelRatio: 3, 
+        backgroundColor: '#ffffff',
+        cacheBust: true,
       });
-      // Detect iOS devices (iPhone / iPad / iPod and iPadOS)
-      const isIOS = typeof navigator !== 'undefined' && (
-        /iP(hone|od|ad)/.test(navigator.userAgent) ||
-        (navigator.platform === 'MacIntel' && (navigator as any).maxTouchPoints > 1)
-      );
 
-      // On iOS Safari the `download` attribute is ignored — open the image in a new tab so
-      // users can long-press to save. For other browsers create a blob and trigger download.
-      if (isIOS) {
-        const newWindow = window.open();
-        if (newWindow) {
-          // Use the data URL for reliable display in the new tab
-          newWindow.document.write(`<!doctype html><title>Ticket</title><style>html,body{margin:0;height:100%;display:flex;align-items:center;justify-content:center;background:#fff}</style><img src="${dataUrl}" style="max-width:100%;height:auto;"/>`);
-          newWindow.document.close();
-        } else {
-          // Fallback: try opening the data URL directly
-          window.location.href = dataUrl;
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      const filename = `Conference_Ticket_No_${bookingNo}.png`;
+
+      // 1. Try Native Web Share API (Best for iOS/Android - Allows "Save Image" to gallery)
+      if (typeof navigator !== 'undefined' && navigator.canShare && navigator.share) {
+        const file = new File([blob], filename, { type: 'image/png' });
+        
+        // Check if the browser can share this specific file type
+        if (navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'Conference Ticket',
+            });
+            // If share is successful or the user completes it, stop here.
+            return; 
+          } catch (shareError: any) {
+            // If the user simply closed the share sheet, do nothing and return
+            if (shareError.name === 'AbortError') return;
+            console.error('Share API failed:', shareError);
+            // If it failed for another reason, let it fall through to the standard download
+          }
         }
-      } else {
-        // Convert dataURL to blob and use object URL for download to avoid issues with very large data URLs
-        const res = await fetch(dataUrl);
-        const blob = await res.blob();
-        const blobUrl = URL.createObjectURL(blob);
-
-        const link = document.createElement('a');
-        link.download = `Conference_Ticket_No_${bookingNo}.png`;
-        link.href = blobUrl;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        // Release object URL after a short delay to ensure the download started
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
       }
+
+      // 2. Standard Download Fallback (Desktop Safari, Chrome, Edge, etc.)
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = blobUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1500);
       
     } catch (err) {
       console.error('Error generating ticket image:', err);
